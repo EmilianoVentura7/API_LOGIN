@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         EC2_USER = 'ubuntu'
-        SSH_KEY = credentials('ssh-key-ec2')
+        SSH_KEY = credentials('ssh-key-ec2-login')
         PROD_IP = '107.22.122.180'
         DEV_IP ='54.227.62.254'
         QA_IP = '52.23.140.75'
@@ -63,7 +63,9 @@ pipeline {
                         cd $REMOTE_PATH &&
                         git pull origin ${env.ACTUAL_BRANCH} &&
                         npm ci &&
-                        pm2 restart ${pm2_name} || pm2 start server.js --name ${pm2_name}
+                        echo "📦 Instalando CORS..." &&
+                        npm install cors &&
+                        pm2 restart ${pm2_name} || pm2 start index.js --name ${pm2_name}
                     '
                     """
                 }
